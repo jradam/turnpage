@@ -1,0 +1,17 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Vars from Layout.astro */
+  --color-banner: var(--color-banner);
+
+  /* Book aspect ratio is 8:5 */
+  --book-height: 520px;
+  --book-width: 325px;
+
+  --half-book: calc(var(--book-height) * 0.5);
+  --quarter-book: calc(var(--book-height) * 0.25);
+
+  /* Custom screens */
+  --breakpoint-xxs: 400px;
+  --breakpoint-xs: 475px;
+}

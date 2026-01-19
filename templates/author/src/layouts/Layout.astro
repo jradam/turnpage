@@ -1,0 +1,73 @@
+---
+import { type Profile, elementToCSS } from '@turnpage/shared'
+import '@turnpage/shared/fonts'
+import '../global.css'
+
+interface Props {
+  profile: Profile
+}
+const {
+  profile: { name, el_body, el_h1, el_h2, el_button, var_banner_color },
+} = Astro.props
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width" name="viewport" />
+    <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+    <meta content={Astro.generator} name="generator" />
+    <title>{name}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style
+  is:global
+  define:vars={{
+    ...elementToCSS(el_body, 'body'),
+    ...elementToCSS(el_h1, 'h1'),
+    ...elementToCSS(el_h2, 'h2'),
+    ...elementToCSS(el_button, 'button'),
+    var_banner_color,
+  }}
+>
+  /* Vars for use in global.css */
+  :root {
+    --color-banner: var(--var_banner_color);
+  }
+
+  /* General styles */
+  body {
+    font-family: var(--body_family);
+    font-weight: var(--body_weight);
+    font-style: var(--body_style);
+    color: var(--body_color);
+    background-color: var(--body_bg_color);
+  }
+
+  h1 {
+    font-family: var(--h1_family);
+    font-weight: var(--h1_weight);
+    font-style: var(--h1_style);
+    color: var(--h1_color);
+  }
+
+  h2 {
+    font-family: var(--h2_family);
+    font-weight: var(--h2_weight);
+    font-style: var(--h2_style);
+    color: var(--h2_color);
+  }
+
+  button {
+    font-family: var(--button_family);
+    font-weight: var(--button_weight);
+    font-style: var(--button_style);
+    color: var(--button_color);
+    background-color: var(--button_bg_color);
+  }
+</style>

@@ -1,0 +1,40 @@
+---
+import type { Book } from '@turnpage/shared'
+
+interface Props {
+  book: Book
+}
+const { book } = Astro.props
+---
+
+<section
+  id="hero"
+  class="mt-(--quarter-book) bg-banner p-10 lg:my-(--quarter-book)"
+>
+  <div class="relative mx-auto flex max-w-6xl flex-col gap-x-16 lg:flex-row">
+    <div class="min-w-(--book-width)"></div>
+    <img
+      alt="The latest book"
+      class="mx-auto -mb-(--quarter-book) w-(--book-width) -translate-y-1/4 shadow-2xl lg:absolute lg:top-1/2 lg:-translate-y-1/2 lg:transform-[perspective(1000px)_rotateY(10deg)]"
+      src={book.cover_url}
+    />
+
+    <div
+      class="mx-auto mt-auto flex min-h-(--half-book) max-w-96 flex-col gap-y-4 text-justify lg:max-w-full lg:text-left"
+    >
+      <h2 class="mx-auto mt-12 text-4xl font-bold lg:mx-0 lg:mt-0">
+        {book.title}
+      </h2>
+
+      {book.description.map((each) => <p>{each}</p>)}
+
+      <div class="mx-auto mt-auto lg:mx-0">
+        <button
+          class="mt-2 w-fit cursor-pointer px-3 py-2 transition-opacity hover:opacity-85"
+        >
+          Learn more
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

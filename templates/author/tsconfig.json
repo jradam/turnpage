@@ -1,0 +1,6 @@
+{
+  "extends": "astro/tsconfigs/strictest",
+  "compilerOptions": { "noEmit": true },
+  "include": [ ".astro/types.d.ts", "**/*" ],
+  "exclude": [ "dist", "eslint.config.mjs" ]
+}

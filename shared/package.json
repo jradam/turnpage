@@ -1,0 +1,19 @@
+{
+  "name": "@turnpage/shared",
+  "version": "0.1.0",
+  "description": "Shared types and utilities",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "lint": "tsc --noEmit && eslint ."
+  },
+  "dependencies": {
+    "@fontsource-variable/caveat": "^5.2.8",
+    "@fontsource-variable/noto-serif": "^5.2.9",
+    "@fontsource-variable/playfair-display": "^5.2.8",
+    "@supabase/supabase-js": "^2.87.3"
+  }
+}

@@ -1,0 +1,57 @@
+---
+import { SUPABASE_URL, SUPABASE_ANON_KEY, PROFILE_ID } from 'astro:env/server'
+import { createSupabase, type Book, type Profile } from '@turnpage/shared'
+import Article from '../components/Article.astro'
+import Books from '../components/Books.astro'
+import Header from '../components/Header.astro'
+import Hero from '../components/Hero.astro'
+import Layout from '../layouts/Layout.astro'
+
+const supabase = createSupabase({ SUPABASE_URL, SUPABASE_ANON_KEY })
+
+const getProfile = async (): Promise<Profile> => {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', PROFILE_ID)
+    .single()
+
+  if (error) throw Error(error.message)
+  if (!data) throw Error('No profile found')
+
+  return data
+}
+
+const getBooks = async (): Promise<[Book, ...Book[]]> => {
+  const { data, error } = await supabase
+    .from('works')
+    .select('*')
+    .eq('profile_id', PROFILE_ID)
+    .eq('work_type', 'book')
+
+  if (error) throw Error(error.message)
+
+  const books = (data || [])
+    .filter((work): work is Book => work.work_type === 'book')
+    .sort((a, b) => a.order - b.order)
+
+  const [first, ...rest] = books
+  if (!first) throw Error('No books')
+
+  return [first, ...rest]
+}
+
+const profile = await getProfile()
+const books = await getBooks()
+---
+
+<Layout profile={profile}>
+  <Header>{profile.name}</Header>
+  <Hero book={books[0]} />
+  <Article
+    title={profile.name}
+    paragraphs={profile.bio}
+    image={profile.photo_url}
+  />
+  {books.length > 1 && <Books books={books} defaultAuthor={profile.name} />}
+</Layout>

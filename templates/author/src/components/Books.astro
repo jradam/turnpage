@@ -1,0 +1,31 @@
+---
+import type { Book } from '@turnpage/shared'
+
+interface Props {
+  defaultAuthor: string
+  books: Book[]
+}
+const { defaultAuthor, books } = Astro.props
+---
+
+<section
+  id="books"
+  class="mx-auto my-6 flex max-w-6xl justify-center gap-x-12 p-10"
+>
+  {
+    books.map((book) => (
+      <article class="flex flex-col items-center gap-y-1">
+        <img
+          src={book.cover_url}
+          alt={book.title}
+          class="w-(--book-width) shadow-2xl"
+        />
+        <h3 class="mt-6 text-2xl font-bold">{book.title}</h3>
+        <p class="text-xl">{book.metadata?.author || defaultAuthor}</p>
+        <button class="bg-theme mt-2 w-fit cursor-pointer px-3 py-2 text-white hover:opacity-90">
+          Learn more
+        </button>
+      </article>
+    ))
+  }
+</section>

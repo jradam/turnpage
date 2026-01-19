@@ -1,0 +1,39 @@
+---
+import { Image } from 'astro:assets'
+
+interface Props {
+  title: string
+  paragraphs: string[]
+  image: string | null
+}
+const { title, paragraphs, image } = Astro.props
+
+// TODO: add support for articles without photos
+if (!image) throw Error('No article photo')
+---
+
+<article class="mt-10 p-10">
+  <div class="mx-auto flex max-w-6xl flex-col gap-x-16 lg:flex-row-reverse">
+    <h2 class="mx-auto pb-6 text-3xl font-bold lg:hidden">{title}</h2>
+
+    <div
+      class="relative mx-auto h-80 w-60 overflow-hidden rounded-3xl xs:h-96 xs:w-80 lg:h-auto lg:min-w-(--book-width)"
+    >
+      <Image
+        src={image}
+        alt={title}
+        class="absolute inset-0 h-full w-full object-cover object-top"
+        layout="constrained"
+        inferSize
+      />
+    </div>
+
+    <div
+      class="mx-auto my-6 flex max-w-96 flex-col gap-y-5 text-justify lg:max-w-full lg:text-left"
+    >
+      <h2 class="hidden text-3xl font-bold lg:block">{title}</h2>
+
+      {paragraphs.map((p) => <p>{p}</p>)}
+    </div>
+  </div>
+</article>
