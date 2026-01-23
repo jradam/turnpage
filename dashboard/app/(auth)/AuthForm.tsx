@@ -17,18 +17,23 @@ type State = {
 
 type Props = {
   mode: 'Log in' | 'Sign up'
+  initialError?: string
 }
 
-export default function LoginForm({ mode }: Props): ReactElement {
+const MIN_PASSWORD_LENGTH = 6
+
+export default function LoginForm(props: Props): ReactElement {
+  const { mode, initialError } = props
+  const { supabase } = useSession()
+  const router = useRouter()
+
   const [state, dispatch] = useReducer(
     (prev: State, next: Partial<State>) => {
       const newState = { ...prev, ...next }
 
-      // Clear error when typing in fields
       if ('email' in next || 'password' in next || 'confirm' in next) {
-        newState.error = ''
+        newState.error = '' // Clear error when typing in fields
       }
-
       return newState
     },
     {
@@ -36,12 +41,9 @@ export default function LoginForm({ mode }: Props): ReactElement {
       password: '',
       confirm: '',
       loading: false,
-      error: '',
+      error: initialError || '',
     },
   )
-
-  const supabase = initBrowserClient()
-  const router = useRouter()
 
   const submit = async (event: FormEvent): Promise<void> => {
     event.preventDefault()
@@ -118,7 +120,7 @@ export default function LoginForm({ mode }: Props): ReactElement {
           value={state.password}
           onChange={(value) => dispatch({ password: value })}
           disabled={state.loading}
-          minLength={6}
+          minLength={MIN_PASSWORD_LENGTH}
           labelRight={
             mode === 'Log in' && (
               <NavLink href="/forgot" className="font-normal" noTab>
@@ -137,7 +139,7 @@ export default function LoginForm({ mode }: Props): ReactElement {
               value={state.confirm}
               onChange={(value) => dispatch({ confirm: value })}
               disabled={state.loading}
-              minLength={6}
+              minLength={MIN_PASSWORD_LENGTH}
             />
           </>
         )}

@@ -5,14 +5,22 @@ import { getEnvVars } from '@/utilities/helpers'
 // Route handler for email confirmation links
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const { searchParams, origin } = request.nextUrl
-  const code = searchParams.get('code')
-  const path = `${origin}/verified`
 
-  // If no code is found in the link, send to error page
-  if (!code) return NextResponse.redirect(`${path}?error=no-code`)
+  const errorPath = `${origin}/login`
+  const destination = `${origin}/u/profile`
+
+  // Re-encode with '+' so we can pass through again
+  const linkError = searchParams.get('error_description')?.replace(/ /g, '+')
+  const code = searchParams.get('code')
+
+  if (linkError || !code) {
+    return NextResponse.redirect(
+      `${errorPath}?error=${linkError || 'Link+error'}`,
+    )
+  }
 
   const { url, anonKey } = getEnvVars()
-  const response = NextResponse.redirect(path)
+  const response = NextResponse.redirect(destination)
 
   // Route handlers can set cookies (unlike Server Actions), which
   // is why we handle the code exchange here instead of in a page
@@ -29,7 +37,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   // Exchange the code for a session and set the auth cookie
   const { error } = await supabase.auth.exchangeCodeForSession(code)
-  if (error) return NextResponse.redirect(`${path}?error=exchange-error`)
+  if (error) return NextResponse.redirect(`${errorPath}?error=Login+error`)
 
   return response
 }
