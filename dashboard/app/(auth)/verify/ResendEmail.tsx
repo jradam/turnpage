@@ -1,10 +1,11 @@
 'use client'
 
 import Button from '@/components/Button'
-import { initBrowserClient } from '@/supabase/browserClient'
+import { useSession } from '@/providers/SessionProvider'
 import { ReactElement, useEffect, useReducer } from 'react'
 
-const TIMER = 30
+const TIMER_SECONDS = 60 // At least 60: Supabase error if requested <60 seconds anyway
+const INTERVAL_MS = 1000
 
 type State = {
   loading: boolean
@@ -25,7 +26,7 @@ function reducer(prev: State, next: Action): State {
     case 'start':
       return { ...prev, loading: true, error: '' }
     case 'success':
-      return { ...prev, loading: false, timer: TIMER }
+      return { ...prev, loading: false, timer: TIMER_SECONDS }
     case 'error':
       return { ...prev, loading: false, error: next.message }
   }
@@ -38,24 +39,23 @@ type Props = {
 
 export default function Verify(props: Props): ReactElement {
   const { email, allowImmediateResend } = props
-
-  const supabase = initBrowserClient()
+  const { supabase } = useSession()
 
   const [state, dispatch] = useReducer(reducer, {
     loading: false,
-    timer: allowImmediateResend ? 0 : TIMER,
+    timer: allowImmediateResend ? 0 : TIMER_SECONDS,
     error: '',
   })
 
   useEffect(() => {
-    if (state.timer <= 0 || state.loading) return
+    if (state.timer === 0) return
 
-    const id = setTimeout(() => {
+    const timeout = setTimeout(() => {
       dispatch({ type: 'tick' })
-    }, 1000)
+    }, INTERVAL_MS)
 
-    return (): void => clearTimeout(id)
-  }, [state.timer, state.loading])
+    return (): void => clearTimeout(timeout)
+  }, [state.timer])
 
   const resendEmail = async (): Promise<void> => {
     dispatch({ type: 'start' })

@@ -1,9 +1,9 @@
+import { SessionProvider } from '@/providers/SessionProvider'
+import { cn } from '@/utilities/helpers'
 import type { Metadata } from 'next'
 import { Caveat, Inter } from 'next/font/google'
-import './globals.css'
-import { AuthProvider } from '@/providers/AuthProvider'
 import { ReactElement, ReactNode } from 'react'
-import { cn } from '@/utilities/helpers'
+import './globals.css'
 
 const caveat = Caveat({
   variable: '--font-caveat',
@@ -34,7 +34,7 @@ export default function RootLayout({
           'mx-auto h-full max-w-6xl bg-lightest font-inter antialiased',
         )}
       >
-        <AuthProvider>{children}</AuthProvider>
+        <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
   )

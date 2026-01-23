@@ -1,21 +1,14 @@
 'use client'
 
-import { ReactElement } from 'react'
-import { useAuth } from '@/providers/AuthProvider'
 import Logo from '@/assets/Logo'
 import NavLink from '@/components/NavLink'
-import { initBrowserClient } from '@/supabase/browserClient'
-import { useRouter } from 'next/navigation'
+import { useLogout } from '@/hooks/useLogout'
+import { useSession } from '@/providers/SessionProvider'
+import { ReactElement } from 'react'
 
 export default function Header(): ReactElement | null {
-  const { user } = useAuth()
-  const router = useRouter()
-
-  const logout = async (): Promise<void> => {
-    const supabase = initBrowserClient()
-    await supabase.auth.signOut()
-    router.push('/')
-  }
+  const { user } = useSession()
+  const logout = useLogout()
 
   return (
     <nav className="flex items-center gap-x-3 px-6 py-6">

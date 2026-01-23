@@ -3,7 +3,7 @@
 import Button from '@/components/Button'
 import Input from '@/components/Input'
 import NavLink from '@/components/NavLink'
-import { initBrowserClient } from '@/supabase/browserClient'
+import { useSession } from '@/providers/SessionProvider'
 import { useRouter } from 'next/navigation'
 import { FormEvent, ReactElement, useReducer } from 'react'
 

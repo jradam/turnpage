@@ -1,6 +1,8 @@
 import { cn } from '@/utilities/helpers'
 import { ReactElement } from 'react'
 
+// TODO: Implement textarea
+
 type Props = {
   value: string
   onChange: (value: string) => void

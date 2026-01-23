@@ -5,7 +5,7 @@ import { XCircleIcon } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
 import Button from '@/components/Button'
 import NavLink from '@/components/NavLink'
-import { initBrowserClient } from '@/supabase/browserClient'
+import { useLogout } from '@/hooks/useLogout'
 
 export default function Error({
   error,
@@ -15,12 +15,7 @@ export default function Error({
   reset: () => void
 }): ReactElement {
   const router = useRouter()
-
-  const logout = async (): Promise<void> => {
-    const supabase = initBrowserClient()
-    await supabase.auth.signOut()
-    router.push('/')
-  }
+  const logout = useLogout()
 
   return (
     <div

@@ -1,6 +1,6 @@
 import Spinner from '@/assets/Spinner'
 import { uploadImage } from '@/utilities/actions'
-import { cn } from '@/utilities/helpers'
+import { cn, getEnvVars } from '@/utilities/helpers'
 import Image from 'next/image'
 import { ChangeEvent, DragEvent, ReactElement, useRef, useState } from 'react'
 import { toast } from 'sonner'
@@ -32,10 +32,8 @@ export default function ImageUpload(props: Props): ReactElement {
 
     // Build the full storage URL and pass it to the callback
     // (for updating database with the image URL where required)
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseStorage = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_PATH
-    if (!supabaseUrl || !supabaseStorage) throw Error('Env vars are not set')
-    await onUpload(`${supabaseUrl}${supabaseStorage}${path}`)
+    const { url, storagePath } = getEnvVars()
+    await onUpload(`${url}${storagePath}${path}`)
 
     setLoading(false)
   }

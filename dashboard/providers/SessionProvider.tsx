@@ -1,7 +1,7 @@
 'use client'
 
 import { initBrowserClient } from '@/supabase/browserClient'
-import { User } from '@turnpage/shared'
+import { SupabaseClient, User } from '@turnpage/shared'
 import {
   ReactElement,
   ReactNode,
@@ -11,10 +11,13 @@ import {
   useState,
 } from 'react'
 
-type AuthContextType = { user: User | null }
-const AuthContext = createContext<AuthContextType>({ user: null })
+type SessionContextType = {
+  user: User | null
+  supabase: SupabaseClient
+}
+const SessionContext = createContext<SessionContextType | undefined>(undefined)
 
-export function AuthProvider({
+export function SessionProvider({
   children,
 }: {
   children: ReactNode
@@ -33,14 +36,16 @@ export function AuthProvider({
   }, [supabase])
 
   return (
-    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+    <SessionContext.Provider value={{ user, supabase }}>
+      {children}
+    </SessionContext.Provider>
   )
 }
 
-export function useAuth(): AuthContextType {
-  const context = useContext(AuthContext)
+export function useSession(): SessionContextType {
+  const context = useContext(SessionContext)
   if (context === undefined) {
-    throw Error('useAuth must be used within an AuthProvider')
+    throw Error('useSession must be used within a SessionProvider')
   }
   return context
 }

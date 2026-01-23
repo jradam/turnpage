@@ -7,14 +7,18 @@ import { Profile } from '@turnpage/shared'
 import { ReactElement, useEffect, useReducer } from 'react'
 import { toast } from 'sonner'
 
+const SAVE_INTERVAL_MS = 1000
+
 type State = {
   slug: string
   name: string | null
   photo_url: string | null
 }
+
 type Props = {
   profile: Profile
 }
+
 export default function EditProfile(props: Props): ReactElement {
   const { profile } = props
   const [state, dispatch] = useReducer(
@@ -36,7 +40,7 @@ export default function EditProfile(props: Props): ReactElement {
     if (!hasChanges) return
 
     const timeout = setTimeout(async () => {
-      const { data, error } = await updateProfile(state, true)
+      const { data, error } = await updateProfile(state, 'no-revalidate')
 
       if (!data || error) {
         toast.error(error || 'Error updating profile')
@@ -44,7 +48,7 @@ export default function EditProfile(props: Props): ReactElement {
       }
 
       toast.success('Profile updated')
-    }, 1000)
+    }, SAVE_INTERVAL_MS)
 
     return (): void => clearTimeout(timeout)
   }, [state, profile])
