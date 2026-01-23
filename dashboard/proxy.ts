@@ -9,10 +9,14 @@ import { getEnvVars } from './utilities/helpers'
 export default async function proxy(
   request: NextRequest,
 ): Promise<NextResponse> {
+  const pathname = request.nextUrl.pathname.toLowerCase()
+  const authPages = ['/login', '/signup', '/verify', '/forgot']
+
+  const isAuthPage = authPages.includes(pathname)
+  const isProtectedPage = pathname.startsWith('/u')
+
   // Public routes don't need auth checks
-  if (!request.nextUrl.pathname.toLowerCase().startsWith('/u')) {
-    return NextResponse.next()
-  }
+  if (!isAuthPage && !isProtectedPage) return NextResponse.next()
 
   const response = NextResponse.next({ request: { headers: request.headers } })
   const { url, anonKey } = getEnvVars()
@@ -31,7 +35,15 @@ export default async function proxy(
 
   // Check if user is logged in, and refresh their token (getUser refreshes token if necessary)
   const { data, error } = await supabase.auth.getUser()
-  if (!data.user || error) {
+  const isAuthenticated = data.user && !error
+
+  // If user is on any auth page, but is already authenticated, just log them in
+  if (isAuthPage && isAuthenticated) {
+    return NextResponse.redirect(new URL('/u/profile', request.url))
+  }
+
+  // If user is trying to access a protected page without authentication, send them to login
+  if (isProtectedPage && !isAuthenticated) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 

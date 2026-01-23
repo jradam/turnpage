@@ -1,21 +1,18 @@
 import NavLink from '@/components/NavLink'
-import AuthForm from '../AuthForm'
 import { ReactElement } from 'react'
-import { initServerClient } from '@/supabase/serverClient'
-import { redirect } from 'next/navigation'
+import AuthForm from '../AuthForm'
 
-export default async function Login(): Promise<ReactElement> {
-  const supabase = await initServerClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  // Automatically redirect if user is authenticated
-  if (user?.email) redirect(`/u/profile`)
+export default async function Login({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>
+}): Promise<ReactElement> {
+  // Errors from email verification failing get sent here
+  const { error } = await searchParams
 
   return (
     <>
-      <AuthForm mode="Log in" />
+      <AuthForm mode="Log in" initialError={error} />
 
       <div className="flex gap-x-2">
         <span className="font-bold">Not a member?</span>
