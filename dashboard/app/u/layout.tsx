@@ -2,7 +2,7 @@ import { ReactElement, ReactNode } from 'react'
 import Header from './Header'
 import { Toaster } from 'sonner'
 
-export default async function AuthLayout({
+export default async function ProfileLayout({
   children,
 }: Readonly<{
   children: ReactNode

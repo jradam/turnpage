@@ -17,7 +17,7 @@
     "start-all": "bun run --filter '*' start",
     "lint": "bun run --filter '*' lint",
     "test": "bun run --filter '*' test",
-    "types": "bunx supabase gen types typescript --project-id \"tsikfwsrraeteoptlenm\" --schema public > shared/database.types.ts"
+    "types": "bunx supabase gen types typescript --project-id \"tsikfwsrraeteoptlenm\" --schema public > shared/types/database.types.ts"
   },
   "dependencies": {
     "supabase": "^2.65.0"

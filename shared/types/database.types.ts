@@ -60,7 +60,7 @@ export type Database = {
       }
       profiles: {
         Row: {
-          bio: string[]
+          bio: string[] | null
           created_at: string
           domain: string | null
           el_body: Json | null
@@ -69,7 +69,7 @@ export type Database = {
           el_h2: Json | null
           id: string
           metadata: Json | null
-          name: string
+          name: string | null
           photo_url: string | null
           profile_type: Database["public"]["Enums"]["profile_type"]
           published_at: string | null
@@ -79,7 +79,7 @@ export type Database = {
           var_banner_color: string | null
         }
         Insert: {
-          bio: string[]
+          bio?: string[] | null
           created_at?: string
           domain?: string | null
           el_body?: Json | null
@@ -88,7 +88,7 @@ export type Database = {
           el_h2?: Json | null
           id?: string
           metadata?: Json | null
-          name: string
+          name?: string | null
           photo_url?: string | null
           profile_type?: Database["public"]["Enums"]["profile_type"]
           published_at?: string | null
@@ -98,7 +98,7 @@ export type Database = {
           var_banner_color?: string | null
         }
         Update: {
-          bio?: string[]
+          bio?: string[] | null
           created_at?: string
           domain?: string | null
           el_body?: Json | null
@@ -107,7 +107,7 @@ export type Database = {
           el_h2?: Json | null
           id?: string
           metadata?: Json | null
-          name?: string
+          name?: string | null
           photo_url?: string | null
           profile_type?: Database["public"]["Enums"]["profile_type"]
           published_at?: string | null

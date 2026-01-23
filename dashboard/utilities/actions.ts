@@ -10,6 +10,13 @@ import { initServerClient } from '@/supabase/serverClient'
 // - Thrown errors on server lose their message when sent to client anyway
 // - So, handle errors in components on client side (toasts, inline messages, etc.)
 
+// Check if the user is authenticated yet
+export async function getUser(): Promise<User | null> {
+  const supabase = await initServerClient()
+  const { data } = await supabase.auth.getUser()
+  return data.user
+}
+
 type Result<T> = { data: T; error: null } | { data: null; error: string }
 
 // Get an authenticated supabase client and the user
@@ -42,7 +49,7 @@ export const getProfile = async (): Promise<Result<Profile>> => {
 
 export const updateProfile = async (
   profile: Partial<Profile>,
-  noRevalidate?: true,
+  noRevalidate?: 'no-revalidate',
 ): Promise<Result<Profile>> => {
   const { supabase, user } = await getAuthenticatedClient()
 
@@ -75,10 +82,14 @@ export const uploadImage = async ({
   const extension = file.name.split('.').pop()
   const path = `${folder}/${filename}.${extension}`
 
+  // Tell browsers to cache for a year, as the image will update when
+  // needed anyway - as long as the cache busting link below is used
+  const ONE_YEAR_IN_SECONDS = '31536000'
+
   const { data, error } = await supabase.storage
     .from('images')
     .upload(path, file, {
-      cacheControl: '3600', // Set cache directive to 1 hour
+      cacheControl: ONE_YEAR_IN_SECONDS,
       upsert: true, // Replace file if exists
     })
 

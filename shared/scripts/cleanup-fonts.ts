@@ -2,31 +2,14 @@ import { createSupabase } from '../utilities/database'
 import { readFileSync, readdirSync, unlinkSync, existsSync } from 'fs'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
+import { parse } from 'dotenv'
 
 // This is a post-build script that removes unused fonts from the build output
 // (templates bundle all fonts when built, but each author only uses one or two)
 
 const rootDir = join(dirname(fileURLToPath(import.meta.url)), '../..')
 const distDir = join(process.argv[2] || '.', 'dist/_astro')
-
-// Load environment variables
-function loadEnvFile(path: string): Record<string, string> {
-  const contents = readFileSync(path, 'utf-8')
-  const env: Record<string, string> = {}
-
-  for (const line of contents.split('\n')) {
-    const separatorIndex = line.indexOf('=')
-    if (separatorIndex === -1) continue
-
-    const key = line.slice(0, separatorIndex)
-    const value = line.slice(separatorIndex + 1)
-    env[key] = value
-  }
-
-  return env
-}
-
-const env = loadEnvFile(join(rootDir, '.env'))
+const env = parse(readFileSync(join(rootDir, '.env')))
 
 // Fetch profile from database
 const { data: profile } = await createSupabase(env)
