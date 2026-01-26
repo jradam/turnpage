@@ -1,6 +1,10 @@
-// ------------ PROFILE
+import type { Tables } from './database.types'
 
-export type ProfileType = 'author' | 'musician' | 'actor' // Only 'author' implemented for now
+// TODO: Implement pg_jsonschema extension to lock down the schema for generic Json
+// columns in Supabase, though unfortunately this does not help with generated types
+// OR: Move away from using Json table columns entirely
+
+// ------------ PROFILE
 
 export type Font =
   | 'Noto Serif Variable'
@@ -22,32 +26,21 @@ export type AuthorData = {
   goodreads_url?: string
 }
 
-export type Profile = {
-  id: string
-  profile_type: ProfileType
-  slug: string
-  domain: string | null
-  name: string | null
-  bio: string[] | null
-  photo_url: string | null
-
-  var_banner_color: string | null
-
+// Use generated types from Supabase, but override columns that are generic 'Json' type
+export type Profile = Omit<
+  Tables<'profiles'>,
+  'el_body' | 'el_h1' | 'el_h2' | 'el_button' | 'metadata'
+> & {
   el_body: Element | null
   el_h1: Element | null
   el_h2: Element | null
   el_button: Element | null
-
   metadata: AuthorData | null
-  created_at: string
-  updated_at: string
-  published_at: string | null
-  user_id?: string | null
 }
 
 // ------------ BOOK
-
-export type WorkType = 'book' | 'album' | 'film' | 'project' // Only 'book' implemented for now
+// Called generic 'works' in database for future-proofing
+// e.g. for actors, could be 'films' not 'books'
 
 export type WorkLink = {
   type: 'amazon' | 'custom'
@@ -66,19 +59,10 @@ export type BookMetadata = {
   publisher?: string
 }
 
-export type Book = {
-  id: string
-  profile_id: string
-  work_type: WorkType
-  title: string
-  description: string[]
-  cover_url: string
-  release_date: string | null
+// Use generated types from Supabase, but override columns that are generic 'Json' type
+export type Book = Omit<Tables<'works'>, 'metadata' | 'links'> & {
   metadata: BookMetadata | null
   links: WorkLink[] | null
-  order: number
-  created_at: string | null
-  updated_at: string | null
 }
 
 // ------------ NEWS

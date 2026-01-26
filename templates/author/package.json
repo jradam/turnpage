@@ -11,7 +11,7 @@
     "postbuild": "bun ../../shared/scripts/cleanup-fonts.ts .",
     "start": "astro preview",
     "astro": "astro",
-    "lint": "tsc --noEmit && eslint ."
+    "lint": "astro check && eslint ."
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
@@ -22,6 +22,7 @@
     "vite": "^6.4.1"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.6",
     "eslint-plugin-astro": "^1.5.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "prettier-plugin-astro": "^0.14.1"

@@ -15,25 +15,26 @@ const getProfile = async (): Promise<Profile> => {
     .select('*')
     .eq('id', PROFILE_ID)
     .single()
+    // Supabase has generic 'Json' types, override with our own type
+    .overrideTypes<Profile, { merge: false }>() 
 
-  if (error) throw Error(error.message)
-  if (!data) throw Error('No profile found')
-
+  if (!data || error) throw Error(error.message || 'No profile found')
   return data
 }
 
-const getBooks = async (): Promise<[Book, ...Book[]]> => {
+type AtLeastOneBook = [Book, ...Book[]]
+const getBooks = async (): Promise<AtLeastOneBook> => {
   const { data, error } = await supabase
     .from('works')
     .select('*')
     .eq('profile_id', PROFILE_ID)
     .eq('work_type', 'book')
+    // Supabase has generic 'Json' types, override with our own type
+    .overrideTypes<Book[], { merge: false }>()
 
-  if (error) throw Error(error.message)
+  if (!data || error) throw Error(error.message || 'No books found')
 
-  const books = (data || [])
-    .filter((work): work is Book => work.work_type === 'book')
-    .sort((a, b) => a.order - b.order)
+  const books = data.sort((a, b) => a.order - b.order)
 
   const [first, ...rest] = books
   if (!first) throw Error('No books')
@@ -43,6 +44,8 @@ const getBooks = async (): Promise<[Book, ...Book[]]> => {
 
 const profile = await getProfile()
 const books = await getBooks()
+
+if (!profile.name || !profile.bio) throw Error('Missing key profile info')
 ---
 
 <Layout profile={profile}>
@@ -53,5 +56,5 @@ const books = await getBooks()
     paragraphs={profile.bio}
     image={profile.photo_url}
   />
-  {books.length > 1 && <Books books={books} defaultAuthor={profile.name} />}
+  <Books books={books} defaultAuthor={profile.name} />
 </Layout>
