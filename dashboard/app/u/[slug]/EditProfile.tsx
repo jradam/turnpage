@@ -4,7 +4,7 @@ import ImageUpload from '@/components/ImageUpload'
 import Input from '@/components/Input'
 import { updateProfile } from '@/utilities/actions'
 import { Profile } from '@turnpage/shared'
-import { ReactElement, useEffect, useReducer } from 'react'
+import { ReactElement, useEffect, useReducer, useRef } from 'react'
 import { toast } from 'sonner'
 
 const SAVE_INTERVAL_MS = 1000
@@ -29,15 +29,14 @@ export default function EditProfile(props: Props): ReactElement {
       photo_url: profile.photo_url,
     },
   )
+  const isFirstRender = useRef(true)
 
   // Debounced autosave on state change
   useEffect(() => {
-    const hasChanges =
-      state.slug !== profile.slug ||
-      state.name !== profile.name ||
-      state.photo_url !== profile.photo_url
-
-    if (!hasChanges) return
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
 
     const timeout = setTimeout(async () => {
       const { data, error } = await updateProfile(state, 'no-revalidate')
